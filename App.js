@@ -1,59 +1,85 @@
-import Slider from '@react-native-community/slider'
-import { Picker } from '@react-native-picker/picker' 
-import { useState } from 'react' 
-import { View, Text, SafeAreaView, Switch } from 'react-native'
+import React, { useState } from 'react';
+import { View, Text, Slider, Switch, Button, StyleSheet } from 'react-native';
+import { Picker } from '@react-native-picker/picker';  // Importação corrigida
 
-function App() {
-  const [ produtoSelecionado, setProdutoSelecionado ] = useState (0)
-  const [ produtos, setProdutos ] = useState ([
-    {key: 1, nome: 'Laptop', preco: 4000} ,
-    {key: 2, nome: 'Monitor', preco: 1600} ,
-    {key: 3, nome: 'Vision Pro', preco: 25000},
-  ])
+const App = () => {
+  // Estados
+  const [theme, setTheme] = useState('Claro');
+  const [fontSize, setFontSize] = useState(16);
+  const [isNightMode, setIsNightMode] = useState(false);
 
-  const [value, setValue] = useState(0)
-  const [isOn, setIsOn] = useState(false)
-
-  let produtosItem = produtos.map((value, key) => {
-    return (
-      <Picker.Item
-           key={key}
-           value={key}
-           label={value.nome}
-        />
-    );
-  });
+  // Função para resetar as preferências
+  const resetPreferences = () => {
+    setTheme('Claro');
+    setFontSize(16);
+    setIsNightMode(false);
+  };
 
   return (
-      <SafeAreaView>
-          <Picker
-              selectedValue={produtoSelecionado}
-              onValueChange={(item) => setProdutoSelecionado(item)}
-  >
-    {produtosItem}
-  </Picker>
-  <Text style={{fontSize: 24 }}>{'Produto: ' + produtos[produtoSelecionado].nome}</Text>
-  <Text style={{fontSize: 24 }}>{'Produto: ' + produtos[produtoSelecionado].preco}</Text>
-  <Text style={{fontSize: 24, marginTop: 20 }}>Slider</Text>
-  <Slider
-      minimumValue={0}
-      maximumValue={100}
-      value={value}
-      onValueChange={(value) => setValue(value)}
-  />
+    <View style={styles.container}>
+      <Text style={styles.title}>Configurações de Preferências</Text>
 
-  <Text style={{ fontSize: 24 }}>{value.toFixed()}</Text>
+      {/* Picker para Tema */}
+      <Text style={styles.label}>Tema:</Text>
+      <Picker
+        selectedValue={theme}
+        style={styles.picker}
+        onValueChange={(itemValue) => setTheme(itemValue)}
+      >
+        <Picker.Item label="Claro" value="Claro" />
+        <Picker.Item label="Escuro" value="Escuro" />
+        <Picker.Item label="Automático" value="Automático" />
+      </Picker>
 
-  <Text style={{ fontSize: 24 }}>Switch</Text>
+      {/* Slider para Tamanho da Fonte */}
+      <Text style={styles.label}>Tamanho da Fonte: {fontSize}</Text>
+      <Slider
+        style={styles.slider}
+        minimumValue={12}
+        maximumValue={30}
+        value={fontSize}
+        step={1}
+        onValueChange={(value) => setFontSize(value)}
+      />
 
-  <Switch
-    value={isOn}
-    onValueChange={(value) => setIsOn(value)}
-  />
-  
-  <Text style={{ fontSize: 24 }}>{isOn ? 'Ligado' : 'Desligado'}</Text>
-  </SafeAreaView>
-  )
-}
+      {/* Switch para Modo Noturno */}
+      <Text style={styles.label}>Modo Noturno: {isNightMode ? 'Ativado' : 'Desativado'}</Text>
+      <Switch
+        value={isNightMode}
+        onValueChange={(value) => setIsNightMode(value)}
+      />
 
-export default App
+      {/* Botão de Reset */}
+      <Button title="Resetar Preferências" onPress={resetPreferences} />
+    </View>
+  );
+};
+
+// Estilos
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#f0f0f0',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 18,
+    marginVertical: 10,
+  },
+  picker: {
+    height: 50,
+    width: '100%',
+  },
+  slider: {
+    width: '100%',
+    height: 40,
+  },
+});
+
+export default App;
+
